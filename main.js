@@ -14,7 +14,7 @@ const draw = () => {
     const createNodes = (numNodes, radius) => {
         let nodes = [];
         for (i=0; i<numNodes; i++) {
-            nodes.push({'id': i, 'value':1});
+            nodes.push({'id': i, 'r':radius, 'value':1});
         }
         return nodes;
     }
@@ -22,10 +22,6 @@ const draw = () => {
     const innerNodes = createNodes(26, 90);
     const midNodes = createNodes(31, 180);
     const outerNodes = createNodes(111, 270);
-
-    let allNodes = innerNodes.concat(midNodes);
-
-    allNodes = allNodes.concat(outerNodes);
 
     const createCircle = (nodes,radius) => {
         const arcs = d3.arc()
@@ -74,7 +70,6 @@ const draw = () => {
           })
 
         return centroid;
-        console.log(centroid)
     }
 
     const innerCircle = createCircle(innerNodes, 90);
@@ -118,65 +113,59 @@ const draw = () => {
     }        
         
     innerConnection(innerCircle[0], innerCircle[8]);
+    console.log((innerCircle[0].startAngle+innerCircle[0].endAngle)/2)
+    console.log((midCircle[25].startAngle+midCircle[25].endAngle)/2)
 
-    /*
-    const paths = d3.select('svg')
-                .append('g')
-                .selectAll('path')
-                .data(d3.pie()(1))
-                .enter()
-                .append('path')
-                .attr('d', arc)
-                //.attr('fill','green')
-                //.attr('stroke', 'white')
-                .attr('transform', `translate(${width/2},${height/1.6})`);
 
-    const points = [
-            //centroid[8],centroid[27]
-        ];
-        let radialObj = {}
-        let r = 90;
-        let a = centroid[8].angle;
-        radialObj.a=a;
-        radialObj.r=r;
-        points.push(radialObj);
-        r=radius;
-        for(i=centroid[27].angle;i< centroid[8].angle; i++) {
-            if(i==centroid[27].angle) {
-                r = 180;
-            } 
-            let Obj ={}
-            Obj.a=i;
-            Obj.r=r;
-            points.push(Obj);
+    const radialConnection = (source, target, increasedRadius, direction='clockwise') => {
+        const points =[],
+            startAngle = (source.startAngle+source.endAngle)/2,
+            startRadius = source.r+10,
+            endAngle = (target.startAngle+target.endAngle)/2,
+            endRadius = target.r+10;
+
+        points.push([startAngle, startRadius]);
+
+        if (direction === 'anti-clockwise') {
+            for(i=startAngle; i > endAngle-(2*Math.PI); i= i-(10*Math.PI/180) ) {
+                points.push([i, startRadius+increasedRadius]);
+            }
+            points.push([endAngle,endRadius])
+        } 
+        else if(direction === 'clockwise') {
+            for(i=startAngle; i < endAngle; i= i+(10*Math.PI/180) ) {
+                points.push([i, startRadius+increasedRadius]);
+            }
+            points.push([endAngle,endRadius])
         }
-
-
-
-    // var points = [
-    //     [0, 80],
-    //     [Math.PI * 0.25, 80],
-    //     [Math.PI * 0.5, 30],
-    //     [Math.PI * 0.75, 80],
-    //     [Math.PI, 80],
-    //     [Math.PI * 1.25, 80],
-    //     [Math.PI * 1.5, 80],
-    //     [Math.PI * 1.75, 80],
-    //     [Math.PI * 2, 80]
-    // ];
-
-    const line = d3.lineRadial()//(points)
-                    .radius(d => d.r)
-                    .angle(d => d.a)// * Math.PI/180)
-                    .curve(d3.curveCardinal)
-
-    d3.select('svg')
-    //.append('g')
-   // .selectAll('path')
-    .append('path')
-    .attr('d',line(points))
-    .attr('transform', `translate(${width/2},${height/1.6})`);
-    */
+        console.log(points);
+        // const points = [
+        //     [(innerCircle[0].startAngle+innerCircle[0].endAngle)/2, innerCircle[0].r+10],
+        //     [(innerCircle[0].startAngle+innerCircle[0].endAngle)/2, innerCircle[0].r+40],
+        //     [innerCircle[0].startAngle-(10*Math.PI/180), innerCircle[0].r+40],
+        //     [innerCircle[0].startAngle-(20*Math.PI/180), innerCircle[0].r+40],
+        //     [innerCircle[0].startAngle-(30*Math.PI/180), innerCircle[0].r+40],
+        //     [innerCircle[0].startAngle-(40*Math.PI/180), innerCircle[0].r+40],
+        //     [innerCircle[0].startAngle-(50*Math.PI/180), innerCircle[0].r+40],
+        //     [innerCircle[0].startAngle-(60*Math.PI/180), innerCircle[0].r+40],
+        //     [(midCircle[25].startAngle+midCircle[25].endAngle)/2, innerCircle[0].r+40],
+        //     [(midCircle[25].startAngle+midCircle[25].endAngle)/2, midCircle[25].r+10]
+        // ];
+    
+        const line = d3.lineRadial()
+                        //.radius(d => d.r)
+                        //.angle(d => d.a)// * Math.PI/180)
+                        .curve(d3.curveBasis)
+    
+        d3.select('svg')
+            .append('g')
+            .append('path')
+            .attr('d',line(points))
+            .attr('transform', `translate(${width/2},${height/1.6})`);
+    }
+    
+    radialConnection(innerCircle[0], midCircle[25], 40, 'anti-clockwise')
+    radialConnection(midCircle[25], outerCircle[95], 40)
 }
 
 draw();
