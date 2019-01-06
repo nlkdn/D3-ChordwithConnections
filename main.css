@@ -1,0 +1,9 @@
+circle{
+    fill:salmon
+}
+
+path {
+    stroke:salmon;
+    stroke-width: 4;
+    fill: none;
+}

@@ -1,0 +1,16 @@
+50200012693942
+IFSC - HDFC0001290
+
+SRI SAIRAM SUBHAYATRA -CURRENT
+
+MICR- 600240043
+
+"links":[{"source":"Structural basis of PROTAC cooperative recognition for selective protein degradation.","target":"109-294-662-661-65X","value":2},
+
+"nodes":[{"id":"Structural basis of PROTAC cooperative recognition for selective protein degradation.","group":"Cited Works","radius":2,"citing_patents_count":2},
+{"id":"109-294-662-661-65X","group":"Citing Patents"}
+
+data = Object {
+  nodes: Array(336) [Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, …]
+  links: Array(275) [Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, …]
+}
